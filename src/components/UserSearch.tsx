@@ -2,11 +2,8 @@ import React, { useState } from "react";
 import {
   collection,
   query,
-  where,
   getDocs,
-  orderBy,
   limit,
-  or,
 } from "firebase/firestore";
 import { db } from "../firebase/config";
 import { useAuth } from "../contexts/AuthContext";
