@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from "react";
-import { useConversations } from "../contexts/ConversationContext";
-import { useAuth } from "../contexts/AuthContext";
+import { useConversations } from "../../contexts/ConversationContext";
+import { useAuth } from "../../contexts/AuthContext";
 import { Timestamp } from "firebase/firestore";
+import "./MessageList.css";
 
 interface Message {
   id: string;
@@ -32,18 +33,16 @@ const MessageList: React.FC = () => {
   }, [messages]);
 
   if (!currentConversation) {
-    return <div className="no-conversation">Select a conversation</div>;
+    return <div className="noConversation">Select a conversation</div>;
   }
 
   if (loadingMessages) {
-    return <div className="loading-messages">Loading messages...</div>;
+    return <div className="loadingMessages">Loading messages...</div>;
   }
 
   if (messages.length === 0) {
     return (
-      <div className="no-messages">
-        No messages yet. Start the conversation!
-      </div>
+      <div className="noMessages">No messages yet. Start the conversation!</div>
     );
   }
 
@@ -100,41 +99,41 @@ const MessageList: React.FC = () => {
   const messageGroups = groupMessagesByDate();
 
   return (
-    <div className="messages-container" ref={messagesContainerRef}>
+    <div className="messagesContainer" ref={messagesContainerRef}>
       {messageGroups.map((group, groupIndex) => (
         <div key={groupIndex}>
-          <div className="date-separator">{group.date}</div>
+          <div className="dateSeparator">{group.date}</div>
           {group.messages.map((message) => (
             <div
               key={message.id}
               className={`message ${
                 message.senderId === currentUser?.uid
-                  ? "my-message"
-                  : "their-message"
+                  ? "myMessage"
+                  : "theirMessage"
               }`}
             >
-              <div className="message-content">
+              <div className="messageContent">
                 {message.senderId !== currentUser?.uid && (
-                  <div className="message-sender">
+                  <div className="messageSender">
                     {getSenderName(message.senderId)}
                   </div>
                 )}
-                <div className="message-text">
+                <div className="messageText">
                   {message.text}
                   {message.decrypted && (
                     <span
-                      className="encrypted-message-indicator"
+                      className="encryptedMessageIndicator"
                       title="End-to-end encrypted"
                     >
                       🔒
                     </span>
                   )}
                 </div>
-                <div className="message-time">
+                <div className="messageTime">
                   {formatTime(message.timestamp)}
                 </div>
                 {!message.decrypted && (
-                  <div className="decryption-error">
+                  <div className="decryptionError">
                     ⚠️ Could not decrypt message
                   </div>
                 )}

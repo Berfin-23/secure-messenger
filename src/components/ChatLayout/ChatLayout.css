@@ -1,0 +1,145 @@
+.chatContainer {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  background-color: #f0f2f5;
+  border-right: 1px solid #ddd;
+}
+
+.sidebar .header {
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.userProfile {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 12px;
+}
+
+.defaultAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #3b82f6;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-right: 12px;
+}
+
+.userInfo h3 {
+  font-size: 16px;
+  margin: 0;
+}
+
+.userInfo p {
+  font-size: 12px;
+  color: #666;
+  margin: 0;
+}
+
+.logoutBtn {
+  padding: 4px 8px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.searchToggle {
+  padding: 10px 15px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+.searchToggle button {
+  width: 100%;
+  padding: 8px;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.conversationsWrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.conversationsTitle {
+  padding: 10px 15px;
+  font-size: 16px;
+  color: #666;
+  margin: 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.chatArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+}
+
+.noChatSelected {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  text-align: center;
+  padding: 20px;
+}
+
+.chatWithUser {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chatHeader {
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chatHeader h3 {
+  margin: 0;
+}
+
+.encryptionBadge {
+  font-size: 12px;
+  color: #666;
+  display: flex;
+  align-items: center;
+}
+
+.messageInputContainer {
+  padding: 0;
+  background-color: white;
+}

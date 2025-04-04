@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import UserSearch from "./UserSearch";
-import MessageList from "./MessageList";
-import MessageInput from "./MessageInput";
-import ConversationList from "./ConversationList";
-import DebugPanel from "./DebugPanel";
-import { useAuth } from "../contexts/AuthContext";
-import { useConversations } from "../contexts/ConversationContext";
+import UserSearch from "../UserSearch/UserSearch";
+import MessageList from "../MessageList/MessageList";
+import MessageInput from "../MessageInput/MessageInput";
+import ConversationList from "../ConversationList/ConversationList";
+import { useAuth } from "../../contexts/AuthContext";
+import { useConversations } from "../../contexts/ConversationContext";
+import "./ChatLayout.css";
 
 interface User {
   uid: string;
@@ -18,7 +18,6 @@ const ChatLayout: React.FC = () => {
   const { currentUser, logout } = useAuth();
   const { startConversationWith, currentConversation } = useConversations();
   const [showSearch, setShowSearch] = useState(false);
-  const [showDebug, setShowDebug] = useState(false);
 
   const handleSelectUser = async (user: User) => {
     console.log("User selected:", user);
@@ -31,18 +30,10 @@ const ChatLayout: React.FC = () => {
   };
 
   return (
-    <div className="chat-container">
-      <div className="debug-toggle">
-        <button onClick={() => setShowDebug(!showDebug)}>
-          {showDebug ? "Hide Debug" : "Show Debug"}
-        </button>
-      </div>
-
-      {showDebug && <DebugPanel />}
-
+    <div className="chatContainer">
       <div className="sidebar">
         <div className="header">
-          <div className="user-profile">
+          <div className="userProfile">
             {currentUser?.photoURL ? (
               <img
                 src={currentUser.photoURL}
@@ -50,22 +41,22 @@ const ChatLayout: React.FC = () => {
                 className="avatar"
               />
             ) : (
-              <div className="default-avatar">
+              <div className="defaultAvatar">
                 {(currentUser?.displayName ||
                   currentUser?.email ||
                   "?")[0].toUpperCase()}
               </div>
             )}
-            <div className="user-info">
+            <div className="userInfo">
               <h3>{currentUser?.displayName || currentUser?.email}</h3>
             </div>
           </div>
-          <button onClick={handleLogout} className="logout-btn">
+          <button onClick={handleLogout} className="logoutBtn">
             Logout
           </button>
         </div>
 
-        <div className="search-toggle">
+        <div className="searchToggle">
           <button onClick={() => setShowSearch(!showSearch)}>
             {showSearch ? "Hide Search" : "Search Users"}
           </button>
@@ -74,17 +65,17 @@ const ChatLayout: React.FC = () => {
         {showSearch ? (
           <UserSearch onSelectUser={handleSelectUser} />
         ) : (
-          <div className="conversations-wrapper">
-            <h3 className="conversations-title">Conversations</h3>
+          <div className="conversationsWrapper">
+            <h3 className="conversationsTitle">Conversations</h3>
             <ConversationList />
           </div>
         )}
       </div>
 
-      <div className="chat-area">
+      <div className="chatArea">
         {currentConversation ? (
-          <div className="chat-with-user">
-            <div className="chat-header">
+          <div className="chatWithUser">
+            <div className="chatHeader">
               {currentUser && (
                 <h3>
                   {Object.values(currentConversation.participantProfiles).find(
@@ -92,19 +83,19 @@ const ChatLayout: React.FC = () => {
                   )?.displayName || "Chat"}
                 </h3>
               )}
-              <div className="encryption-badge" title="End-to-end encrypted">
+              <div className="encryptionBadge" title="End-to-end encrypted">
                 🔒 Encrypted
               </div>
             </div>
 
             <MessageList />
 
-            <div className="message-input-container">
+            <div className="messageInputContainer">
               <MessageInput />
             </div>
           </div>
         ) : (
-          <div className="no-chat-selected">
+          <div className="noChatSelected">
             <h2>Welcome to Secure Messenger</h2>
             <p>Search for a user to start an encrypted conversation</p>
             <p>or select an existing conversation</p>

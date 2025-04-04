@@ -1,0 +1,78 @@
+.userSearch {
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.searchButton {
+  width: 100%;
+  padding: 8px;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.searchResults {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.userItem {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+
+.userItem:hover {
+  background-color: #e6f7ff;
+}
+
+.userAvatar {
+  margin-right: 12px;
+}
+
+.userAvatar img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.defaultAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #3b82f6;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.userInfo h4 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.userInfo p {
+  margin: 0;
+  font-size: 12px;
+  color: #666;
+}
+
+.searchError {
+  color: #d32f2f;
+  margin: 5px 0;
+  font-size: 14px;
+}

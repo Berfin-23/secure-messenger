@@ -1,0 +1,34 @@
+.loginContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  padding: 2rem;
+  text-align: center;
+}
+
+.loginContainer h1 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.loginContainer p {
+  margin-bottom: 2rem;
+  color: #666;
+}
+
+.googleSigninBtn {
+  background-color: #4285f4;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.googleSigninBtn:hover {
+  background-color: #3367d6;
+}

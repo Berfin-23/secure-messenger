@@ -1,0 +1,51 @@
+.conversationItem {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+
+.conversationItem:hover {
+  background-color: #f5f7fa;
+}
+
+.conversationItem.active {
+  background-color: #e6f7ff;
+}
+
+.conversationAvatar {
+  margin-right: 15px;
+}
+
+.conversationDetails {
+  flex: 1;
+  min-width: 0;
+}
+
+.conversationHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.conversationName {
+  margin: 0;
+  font-size: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.conversationTime {
+  font-size: 12px;
+  color: #999;
+}
+
+.conversationLastMessage {
+  font-size: 14px;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

@@ -1,6 +1,7 @@
 import React from "react";
 import { Timestamp } from "firebase/firestore";
-import Avatar from "./Avatar";
+import Avatar from "../Avatar/Avatar";
+import "./ConversationItem.css";
 
 interface User {
   uid: string;
@@ -68,29 +69,29 @@ const ConversationItem: React.FC<ConversationItemProps> = ({
 
   return (
     <div
-      className={`conversation-item ${isActive ? "active" : ""}`}
+      className={`conversationItem ${isActive ? "active" : ""}`}
       onClick={onClick}
     >
-      <div className="conversation-avatar">
+      <div className="conversationAvatar">
         <Avatar
           photoURL={otherUser?.photoURL ?? null}
           displayName={otherUser?.displayName ?? null}
           size={50}
         />
       </div>
-      <div className="conversation-details">
-        <div className="conversation-header">
-          <h4 className="conversation-name">
+      <div className="conversationDetails">
+        <div className="conversationHeader">
+          <h4 className="conversationName">
             {otherUser?.displayName || otherUser?.email || "Unknown User"}
           </h4>
           {conversation.lastMessageTimestamp && (
-            <span className="conversation-time">
+            <span className="conversationTime">
               {formatTime(conversation.lastMessageTimestamp)}
             </span>
           )}
         </div>
         {conversation.lastMessage && (
-          <p className="conversation-last-message">
+          <p className="conversationLastMessage">
             {conversation.lastMessage}
           </p>
         )}

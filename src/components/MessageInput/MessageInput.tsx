@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { useConversations } from "../contexts/ConversationContext";
+import { useConversations } from "../../contexts/ConversationContext";
+import "./MessageInput.css";
 
 const MessageInput: React.FC = () => {
   const [message, setMessage] = useState("");
@@ -33,18 +34,18 @@ const MessageInput: React.FC = () => {
   if (!currentConversation) return null;
 
   return (
-    <form onSubmit={handleSubmit} className="message-input-form">
+    <form onSubmit={handleSubmit} className="messageInputForm">
       <textarea
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder="Type a message..."
-        className="message-input-textarea"
+        className="messageInputTextarea"
         disabled={sending}
       />
       <button
         type="submit"
-        className="send-button"
+        className="sendButton"
         disabled={!message.trim() || sending}
       >
         {sending ? "Sending..." : "Send"}

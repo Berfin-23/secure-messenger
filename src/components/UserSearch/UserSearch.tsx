@@ -1,12 +1,8 @@
 import React, { useState } from "react";
-import {
-  collection,
-  query,
-  getDocs,
-  limit,
-} from "firebase/firestore";
-import { db } from "../firebase/config";
-import { useAuth } from "../contexts/AuthContext";
+import { collection, query, getDocs, limit } from "firebase/firestore";
+import { db } from "../../firebase/config";
+import { useAuth } from "../../contexts/AuthContext";
+import "./UserSearch.css";
 
 interface User {
   uid: string;
@@ -76,41 +72,41 @@ const UserSearch: React.FC<UserSearchProps> = ({ onSelectUser }) => {
   };
 
   return (
-    <div className="user-search">
+    <div className="userSearch">
       <form onSubmit={handleSearch}>
         <input
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Search for users by email..."
-          className="search-input"
+          className="searchInput"
         />
-        <button type="submit" className="search-button" disabled={loading}>
+        <button type="submit" className="searchButton" disabled={loading}>
           {loading ? "Searching..." : "Search"}
         </button>
       </form>
 
-      {error && <div className="search-error">{error}</div>}
+      {error && <div className="searchError">{error}</div>}
 
-      <div className="search-results">
+      <div className="searchResults">
         {searchResults.length > 0 ? (
           <ul>
             {searchResults.map((user) => (
               <li
                 key={user.uid}
                 onClick={() => onSelectUser(user)}
-                className="user-item"
+                className="userItem"
               >
-                <div className="user-avatar">
+                <div className="userAvatar">
                   {user.photoURL ? (
                     <img src={user.photoURL} alt={user.displayName || "User"} />
                   ) : (
-                    <div className="default-avatar">
+                    <div className="defaultAvatar">
                       {(user.displayName || user.email || "?")[0].toUpperCase()}
                     </div>
                   )}
                 </div>
-                <div className="user-info">
+                <div className="userInfo">
                   <h4>{user.displayName || "User"}</h4>
                   <p>{user.email}</p>
                 </div>

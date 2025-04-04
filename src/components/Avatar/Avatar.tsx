@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./Avatar.css";
 
 interface AvatarProps {
   photoURL: string | null;
@@ -38,16 +39,15 @@ const Avatar: React.FC<AvatarProps> = ({
       <img
         src={photoURL}
         alt={displayName || "User"}
-        className={`avatar ${className}`}
+        className={`avatarImg ${className}`}
         style={avatarStyle}
         onError={() => setImageError(true)}
       />
     );
   }
-
-  // Fall back to default avatar with initials
+  
   return (
-    <div className={`default-avatar ${className}`} style={avatarStyle}>
+    <div className={`defaultAvatar ${className}`} style={avatarStyle}>
       {getInitials()}
     </div>
   );
