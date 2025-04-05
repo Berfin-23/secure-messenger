@@ -18,7 +18,8 @@ interface User {
 
 const ChatLayout: React.FC = () => {
   const { currentUser, logout } = useAuth();
-  const { startConversationWith, currentConversation, markConversationAsRead } = useConversations();
+  const { startConversationWith, currentConversation, markConversationAsRead } =
+    useConversations();
 
   const handleSelectUser = async (user: User) => {
     console.log("User selected:", user);
@@ -28,7 +29,7 @@ const ChatLayout: React.FC = () => {
   const handleLogout = async () => {
     await logout();
   };
-  
+
   // Mark conversation as read whenever the current conversation changes
   useEffect(() => {
     if (currentConversation) {
@@ -77,14 +78,37 @@ const ChatLayout: React.FC = () => {
           <div className="chatWithUser">
             <div className="chatHeader">
               {currentUser && (
-                <h3>
-                  {Object.values(currentConversation.participantProfiles).find(
-                    (profile) => profile.uid !== currentUser.uid
-                  )?.displayName || "Chat"}
-                </h3>
+                <>
+                  <div className="chatHeaderUserInfo">
+                    {currentConversation && (
+                      <Avatar
+                        photoURL={
+                          Object.values(
+                            currentConversation.participantProfiles
+                          ).find((profile) => profile.uid !== currentUser.uid)
+                            ?.photoURL || null
+                        }
+                        displayName={
+                          Object.values(
+                            currentConversation.participantProfiles
+                          ).find((profile) => profile.uid !== currentUser.uid)
+                            ?.displayName || "Chat"
+                        }
+                        size={40}
+                        className="chatHeaderAvatar"
+                      />
+                    )}
+                    <h3>
+                      {Object.values(
+                        currentConversation.participantProfiles
+                      ).find((profile) => profile.uid !== currentUser.uid)
+                        ?.displayName || "Chat"}
+                    </h3>
+                  </div>
+                </>
               )}
               <div className="encryptionBadge" title="End-to-end encrypted">
-                🔒 Encrypted
+                <i className="fa fa-lock"></i> End-to-end encrypted
               </div>
             </div>
 

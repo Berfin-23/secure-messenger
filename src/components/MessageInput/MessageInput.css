@@ -4,20 +4,30 @@
   padding: 15px;
   background-color: var(--background-dark-tertiary);
   border-top: 1px solid var(--border-color);
+  align-items: center;
 }
 
 .messageInputTextarea {
   flex: 1;
-  padding: 12px;
+  padding: 10px 15px;
   border: 1px solid var(--border-light);
   border-radius: 20px;
   resize: none;
-  min-height: 40px;
+  height: 40px;
   max-height: 120px;
   margin-right: 10px;
   font-family: inherit;
   background-color: var(--background-elevated);
   color: var(--text-primary);
+  line-height: 1.4;
+  overflow-y: auto;
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
+  -ms-overflow-style: none; /* Hide scrollbar for IE and Edge */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.messageInputTextarea::-webkit-scrollbar {
+  display: none;
 }
 
 .messageInputTextarea::placeholder {
@@ -25,21 +35,31 @@
 }
 
 .sendButton {
+  min-width: 40px;
+  min-height: 40px;
   background-color: var(--primary-blue);
   color: var(--text-primary);
   border: none;
-  border-radius: 20px;
-  padding: 0 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  font-weight: bold;
+  transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
 .sendButton:hover {
   background-color: var(--primary-blue-hover);
+  transform: scale(1.05);
 }
 
 .sendButton:disabled {
   background-color: var(--background-elevated);
   color: var(--text-tertiary);
   cursor: not-allowed;
+  transform: none;
+}
+
+.sendButton i {
+  font-size: 16px;
 }
