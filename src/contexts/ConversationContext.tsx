@@ -17,6 +17,7 @@ import {
   addDoc,
   serverTimestamp,
   Timestamp,
+  increment,
 } from "firebase/firestore";
 import { db } from "../firebase/config";
 import { useAuth } from "./AuthContext";
@@ -217,11 +218,9 @@ export const ConversationProvider: React.FC<{ children: ReactNode }> = ({
       await markConversationAsRead(conversation.id);
 
       // Update the local conversations state to reflect the read status
-      setConversations(prev => 
-        prev.map(conv => 
-          conv.id === conversation.id 
-            ? { ...conv, unreadCount: 0 } 
-            : conv
+      setConversations((prev) =>
+        prev.map((conv) =>
+          conv.id === conversation.id ? { ...conv, unreadCount: 0 } : conv
         )
       );
 
@@ -402,20 +401,28 @@ export const ConversationProvider: React.FC<{ children: ReactNode }> = ({
 
       // Get the current conversation to check unread count
       const conversationRef = doc(db, "conversations", currentConversation.id);
-      
-      // Update the conversation with the encrypted last message, IV, and increment unread count for the recipient
-      await setDoc(
-        conversationRef,
-        {
-          lastMessage: encryptedText,
-          lastMessageIv: iv,
-          lastMessageEncrypted: true,
-          lastMessageTimestamp: serverTimestamp(),
-          // Increment unread count for the recipient when they're not viewing this conversation
-          unreadCount: otherParticipantId ? 1 : 0
-        },
-        { merge: true }
-      );
+
+      // Update the conversation with the encrypted last message, IV
+      const updateData = {
+        lastMessage: encryptedText,
+        lastMessageIv: iv,
+        lastMessageEncrypted: true,
+        lastMessageTimestamp: serverTimestamp(),
+      };
+
+      // Only increment the unread count for the other participant and only if they aren't currently viewing this conversation
+      await setDoc(conversationRef, updateData, { merge: true });
+
+      // In a separate update, increment the unread count only for the other participant
+      if (otherParticipantId) {
+        await setDoc(
+          conversationRef,
+          {
+            unreadCount: increment(1)
+          }, 
+          { merge: true }
+        );
+      }
 
       console.log("Encrypted message sent successfully");
 
@@ -447,7 +454,7 @@ export const ConversationProvider: React.FC<{ children: ReactNode }> = ({
       await setDoc(
         doc(db, "conversations", conversationId),
         {
-          unreadCount: 0
+          unreadCount: 0,
         },
         { merge: true }
       );

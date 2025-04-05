@@ -116,7 +116,9 @@ const ConversationItem: React.FC<ConversationItemProps> = ({
           <p className="conversationLastMessage">
             {conversation.lastMessage || "Start a new conversation"}
           </p>
-          {hasUnread && <span className="unreadBadge">{conversation.unreadCount}</span>}
+          {hasUnread && (
+            <span className="unreadBadge">{conversation.unreadCount}</span>
+          )}
         </div>
       </div>
     </div>

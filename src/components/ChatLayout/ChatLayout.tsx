@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import UserSearch from "../UserSearch/UserSearch";
 import MessageList from "../MessageList/MessageList";
 import MessageInput from "../MessageInput/MessageInput";
@@ -18,7 +18,7 @@ interface User {
 
 const ChatLayout: React.FC = () => {
   const { currentUser, logout } = useAuth();
-  const { startConversationWith, currentConversation } = useConversations();
+  const { startConversationWith, currentConversation, markConversationAsRead } = useConversations();
 
   const handleSelectUser = async (user: User) => {
     console.log("User selected:", user);
@@ -28,6 +28,13 @@ const ChatLayout: React.FC = () => {
   const handleLogout = async () => {
     await logout();
   };
+  
+  // Mark conversation as read whenever the current conversation changes
+  useEffect(() => {
+    if (currentConversation) {
+      markConversationAsRead(currentConversation.id);
+    }
+  }, [currentConversation, markConversationAsRead]);
 
   return (
     <div className="chatContainer">
