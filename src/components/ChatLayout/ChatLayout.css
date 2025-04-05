@@ -2,25 +2,72 @@
   display: flex;
   height: 100vh;
   overflow: hidden;
+  background-color: var(--background-dark);
 }
 
 .sidebar {
   width: 300px;
   display: flex;
   flex-direction: column;
-  background-color: #f0f2f5;
-  border-right: 1px solid #ddd;
+  background-color: var(--background-dark-secondary);
+  border-right: 1px solid var(--border-color);
 }
 
-.sidebar .header {
+.appHeader {
+  padding: 20px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--background-dark-tertiary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.appLogo {
+  height: 32px;
+  width: 32px;
+  margin-right: 10px;
+  color: var(--primary-blue);
+}
+
+.appTitle {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.sidebarContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sectionTitle {
+  padding: 4px 15px;
+  margin: 0;
+  font-size: 24px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.conversationsWrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.userProfileFooter {
   padding: 15px;
-  border-bottom: 1px solid #ddd;
+  border-top: 1px solid var(--border-color);
+  background-color: var(--background-dark-tertiary);
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.userProfile {
+.userProfileInfo {
   display: flex;
   align-items: center;
 }
@@ -30,14 +77,15 @@
   height: 40px;
   border-radius: 50%;
   margin-right: 12px;
+  border: 2px solid var(--border-light);
 }
 
 .defaultAvatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #3b82f6;
-  color: white;
+  background-color: var(--primary-blue);
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -48,59 +96,37 @@
 .userInfo h3 {
   font-size: 16px;
   margin: 0;
-}
-
-.userInfo p {
-  font-size: 12px;
-  color: #666;
-  margin: 0;
+  color: var(--text-primary);
 }
 
 .logoutBtn {
-  padding: 4px 8px;
-  background-color: #f44336;
-  color: white;
+  width: 36px;
+  height: 36px;
+  background-color: var(--background-elevated);
+  color: var(--text-primary);
   border: none;
-  border-radius: 4px;
+  border-radius: 50%;
   cursor: pointer;
-}
-
-.searchToggle {
-  padding: 10px 15px;
-  text-align: center;
-  border-bottom: 1px solid #ddd;
-}
-
-.searchToggle button {
-  width: 100%;
-  padding: 8px;
-  background-color: #3b82f6;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.conversationsWrapper {
-  flex: 1;
   display: flex;
-  flex-direction: column;
-  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
 }
 
-.conversationsTitle {
-  padding: 10px 15px;
+.logoutBtn:hover {
+  background-color: var(--error-color);
+  transform: scale(1.05);
+}
+
+.logoutBtn i {
   font-size: 16px;
-  color: #666;
-  margin: 0;
-  border-bottom: 1px solid #ddd;
 }
 
 .chatArea {
   flex: 1;
   display: flex;
   flex-direction: column;
-  background-color: #fff;
+  background-color: var(--background-dark);
 }
 
 .noChatSelected {
@@ -109,7 +135,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #666;
+  color: var(--text-secondary);
   text-align: center;
   padding: 20px;
 }
@@ -122,24 +148,26 @@
 
 .chatHeader {
   padding: 15px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--border-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background-color: var(--background-dark-tertiary);
 }
 
 .chatHeader h3 {
   margin: 0;
+  color: var(--text-primary);
 }
 
 .encryptionBadge {
   font-size: 12px;
-  color: #666;
+  color: var(--encrypted-color);
   display: flex;
   align-items: center;
 }
 
 .messageInputContainer {
   padding: 0;
-  background-color: white;
+  background-color: var(--background-dark-tertiary);
 }

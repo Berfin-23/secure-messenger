@@ -2,25 +2,31 @@
   display: flex;
   width: 100%;
   padding: 15px;
-  background-color: #fff;
-  border-top: 1px solid #ddd;
+  background-color: var(--background-dark-tertiary);
+  border-top: 1px solid var(--border-color);
 }
 
 .messageInputTextarea {
   flex: 1;
   padding: 12px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-light);
   border-radius: 20px;
   resize: none;
   min-height: 40px;
   max-height: 120px;
   margin-right: 10px;
   font-family: inherit;
+  background-color: var(--background-elevated);
+  color: var(--text-primary);
+}
+
+.messageInputTextarea::placeholder {
+  color: var(--text-tertiary);
 }
 
 .sendButton {
-  background-color: #3b82f6;
-  color: white;
+  background-color: var(--primary-blue);
+  color: var(--text-primary);
   border: none;
   border-radius: 20px;
   padding: 0 20px;
@@ -28,7 +34,12 @@
   font-weight: bold;
 }
 
+.sendButton:hover {
+  background-color: var(--primary-blue-hover);
+}
+
 .sendButton:disabled {
-  background-color: #9fb8da;
+  background-color: var(--background-elevated);
+  color: var(--text-tertiary);
   cursor: not-allowed;
 }

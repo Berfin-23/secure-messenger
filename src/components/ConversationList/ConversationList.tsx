@@ -20,9 +20,22 @@ const ConversationList: React.FC = () => {
     );
   }
 
+  // Sort conversations by timestamp, newest first
+  const sortedConversations = [...conversations].sort((a, b) => {
+    // If either conversation doesn't have a timestamp, handle the edge case
+    if (!a.lastMessageTimestamp && !b.lastMessageTimestamp) return 0;
+    if (!a.lastMessageTimestamp) return 1; // a goes later (lower priority)
+    if (!b.lastMessageTimestamp) return -1; // b goes later (higher priority for a)
+
+    // Compare timestamps (newest first)
+    return (
+      b.lastMessageTimestamp.toMillis() - a.lastMessageTimestamp.toMillis()
+    );
+  });
+
   return (
     <div className="conversationsList">
-      {conversations.map((conversation) => (
+      {sortedConversations.map((conversation) => (
         <ConversationItem
           key={conversation.id}
           conversation={conversation}

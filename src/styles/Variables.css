@@ -1,0 +1,46 @@
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap");
+
+:root {
+  /* Fonts */
+  --font: "Quicksand", sans-serif;
+
+  /* Content Spacing */
+  --mostRelated: 4px;
+  --closelyRelated: 8px;
+  --semiRelated: 16px;
+  --lessRelated: 24px;
+
+  /* Font Sizes */
+  --paragraph: 1rem;
+  --largeParagraph: 1.25rem;
+  --smallSubheading: 1.5rem;
+  --mediumSubheading: 1.75rem;
+  --largeSubheading: 2rem;
+  --extraLargeSubheading: 2.25rem;
+  --extraSmallHeading: 2.5rem;
+  --smallHeading: 2.75rem;
+  --mediumHeading: 3rem;
+  --largeHeading: 3.25rem;
+  --smallDisplay: 3.5rem;
+  --mediumDisplay: 3.75rem;
+  --largeDisplay: 4rem;
+
+  /* Dark Theme Colors */
+  --background-dark: #121212;
+  --background-dark-secondary: #1e1e1e;
+  --background-dark-tertiary: #252525;
+  --background-elevated: #2d2d2d;
+  --primary-blue: #0a53c8;
+  --primary-blue-hover: #195ae5;
+  --primary-blue-light: #2981ec;
+  --accent-blue: #0ea5e9;
+  --text-primary: #ffffff;
+  --text-secondary: #a0a0a0;
+  --text-tertiary: #6b7280;
+  --border-color: #333333;
+  --border-light: #444444;
+  --error-color: #ef4444;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --encrypted-color: #10b981;
+}

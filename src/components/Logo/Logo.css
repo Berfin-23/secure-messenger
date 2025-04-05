@@ -1,0 +1,19 @@
+.logo-svg {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Example class for blue theme */
+.logo-blue {
+  color: var(--primary-blue);
+}
+
+/* Example class for white theme */
+.logo-white {
+  color: white;
+}
+
+/* Example class for a subtle version */
+.logo-subtle {
+  color: var(--text-secondary);
+}

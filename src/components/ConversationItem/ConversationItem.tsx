@@ -16,6 +16,7 @@ interface Conversation {
   lastMessage?: string;
   lastMessageTimestamp?: Timestamp;
   participantProfiles: { [uid: string]: User };
+  unreadCount?: number; // Added unread count property
 }
 
 interface ConversationItemProps {
@@ -40,13 +41,15 @@ const ConversationItem: React.FC<ConversationItemProps> = ({
     ? conversation.participantProfiles[otherParticipantId]
     : null;
 
+  const hasUnread = (conversation.unreadCount || 0) > 0;
+
   const formatTime = (timestamp?: Timestamp) => {
     if (!timestamp) return "";
 
     const date = timestamp.toDate();
     const now = new Date();
 
-    // If the message is from today, just show the time
+    // Check if the date is today
     if (date.toDateString() === now.toDateString()) {
       return date.toLocaleTimeString([], {
         hour: "2-digit",
@@ -54,9 +57,26 @@ const ConversationItem: React.FC<ConversationItemProps> = ({
       });
     }
 
+    // Check if the date is yesterday
+    const yesterday = new Date(now);
+    yesterday.setDate(now.getDate() - 1);
+    if (date.toDateString() === yesterday.toDateString()) {
+      return "Yesterday";
+    }
+
+    // Check if the date is within the past week
+    const pastWeek = new Date(now);
+    pastWeek.setDate(now.getDate() - 6);
+    if (date >= pastWeek) {
+      return date.toLocaleDateString([], { weekday: "short" });
+    }
+
     // If the message is from this year, show the month and day
     if (date.getFullYear() === now.getFullYear()) {
-      return date.toLocaleDateString([], { month: "short", day: "numeric" });
+      return date.toLocaleDateString([], {
+        month: "short",
+        day: "numeric",
+      });
     }
 
     // Otherwise show the full date
@@ -69,14 +89,16 @@ const ConversationItem: React.FC<ConversationItemProps> = ({
 
   return (
     <div
-      className={`conversationItem ${isActive ? "active" : ""}`}
+      className={`conversationItem ${isActive ? "active" : ""} ${
+        hasUnread ? "hasUnread" : ""
+      }`}
       onClick={onClick}
     >
       <div className="conversationAvatar">
         <Avatar
           photoURL={otherUser?.photoURL ?? null}
           displayName={otherUser?.displayName ?? null}
-          size={50}
+          size={40}
         />
       </div>
       <div className="conversationDetails">
@@ -90,11 +112,12 @@ const ConversationItem: React.FC<ConversationItemProps> = ({
             </span>
           )}
         </div>
-        {conversation.lastMessage && (
+        <div className="conversationFooter">
           <p className="conversationLastMessage">
-            {conversation.lastMessage}
+            {conversation.lastMessage || "Start a new conversation"}
           </p>
-        )}
+          {hasUnread && <span className="unreadBadge">{conversation.unreadCount}</span>}
+        </div>
       </div>
     </div>
   );

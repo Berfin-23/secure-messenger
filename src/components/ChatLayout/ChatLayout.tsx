@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import UserSearch from "../UserSearch/UserSearch";
 import MessageList from "../MessageList/MessageList";
 import MessageInput from "../MessageInput/MessageInput";
 import ConversationList from "../ConversationList/ConversationList";
+import Avatar from "../Avatar/Avatar";
 import { useAuth } from "../../contexts/AuthContext";
 import { useConversations } from "../../contexts/ConversationContext";
+import Logo from "../Logo/Logo";
 import "./ChatLayout.css";
 
 interface User {
@@ -17,12 +19,10 @@ interface User {
 const ChatLayout: React.FC = () => {
   const { currentUser, logout } = useAuth();
   const { startConversationWith, currentConversation } = useConversations();
-  const [showSearch, setShowSearch] = useState(false);
 
   const handleSelectUser = async (user: User) => {
     console.log("User selected:", user);
     await startConversationWith(user);
-    setShowSearch(false);
   };
 
   const handleLogout = async () => {
@@ -32,44 +32,37 @@ const ChatLayout: React.FC = () => {
   return (
     <div className="chatContainer">
       <div className="sidebar">
-        <div className="header">
-          <div className="userProfile">
-            {currentUser?.photoURL ? (
-              <img
-                src={currentUser.photoURL}
-                alt={currentUser.displayName || ""}
-                className="avatar"
-              />
-            ) : (
-              <div className="defaultAvatar">
-                {(currentUser?.displayName ||
-                  currentUser?.email ||
-                  "?")[0].toUpperCase()}
-              </div>
-            )}
+        <div className="appHeader">
+          <Logo className="appLogo" fill="var(--primary-blue)" />
+          <h1 className="appTitle">Cypher Bee</h1>
+        </div>
+
+        <div className="sidebarContent">
+          <h3 className="sectionTitle">Chats</h3>
+          <UserSearch onSelectUser={handleSelectUser} />
+          <div className="conversationsWrapper">
+            <ConversationList />
+          </div>
+        </div>
+
+        <div className="userProfileFooter">
+          <div className="userProfileInfo">
+            <Avatar
+              photoURL={currentUser?.photoURL ?? null}
+              displayName={
+                currentUser?.displayName || currentUser?.email || "User"
+              }
+              size={36}
+              className="userAvatar"
+            />
             <div className="userInfo">
               <h3>{currentUser?.displayName || currentUser?.email}</h3>
             </div>
           </div>
-          <button onClick={handleLogout} className="logoutBtn">
-            Logout
+          <button onClick={handleLogout} className="logoutBtn" title="Logout">
+            <i className="fa-solid fa-sign-out-alt"></i>
           </button>
         </div>
-
-        <div className="searchToggle">
-          <button onClick={() => setShowSearch(!showSearch)}>
-            {showSearch ? "Hide Search" : "Search Users"}
-          </button>
-        </div>
-
-        {showSearch ? (
-          <UserSearch onSelectUser={handleSelectUser} />
-        ) : (
-          <div className="conversationsWrapper">
-            <h3 className="conversationsTitle">Conversations</h3>
-            <ConversationList />
-          </div>
-        )}
       </div>
 
       <div className="chatArea">
@@ -96,7 +89,7 @@ const ChatLayout: React.FC = () => {
           </div>
         ) : (
           <div className="noChatSelected">
-            <h2>Welcome to Secure Messenger</h2>
+            <h2>Welcome to Cypher Bee</h2>
             <p>Search for a user to start an encrypted conversation</p>
             <p>or select an existing conversation</p>
           </div>

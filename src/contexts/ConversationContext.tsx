@@ -50,9 +50,15 @@ interface Conversation {
   participants: string[];
   lastMessage?: string;
   lastMessageTimestamp?: Timestamp;
+  lastMessageIv?: string; // Added IV for last message decryption
+  lastMessageEncrypted?: boolean; // Flag to indicate if last message is encrypted
   participantProfiles: { [uid: string]: User };
   encryptionKey?: string; // Stored encryption key
+  unreadCount?: number; // Number of unread messages
 }
+
+// Sort direction options
+export type SortDirection = "asc" | "desc";
 
 interface ConversationContextType {
   conversations: Conversation[];
@@ -62,6 +68,9 @@ interface ConversationContextType {
   startConversationWith: (otherUser: User) => Promise<void>;
   sendMessage: (text: string) => Promise<void>;
   loadingMessages: boolean;
+  messageSortDirection: SortDirection;
+  toggleMessageSort: () => void;
+  markConversationAsRead: (conversationId: string) => Promise<void>;
 }
 
 // Create the context
@@ -91,6 +100,12 @@ export const ConversationProvider: React.FC<{ children: ReactNode }> = ({
   const [encryptionKeys, setEncryptionKeys] = useState<{
     [conversationId: string]: CryptoKey;
   }>({});
+  const [messageSortDirection, setMessageSortDirection] =
+    useState<SortDirection>("asc");
+
+  const toggleMessageSort = () => {
+    setMessageSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+  };
 
   // Get or create a conversation with specific user
   const startConversationWith = async (otherUser: User) => {
@@ -193,25 +208,44 @@ export const ConversationProvider: React.FC<{ children: ReactNode }> = ({
 
   // Select a conversation and load its messages
   const selectConversation = async (conversation: Conversation) => {
-    console.log("Selecting conversation:", conversation);
     setCurrentConversation(conversation);
+    setLoadingMessages(true);
     setMessages([]);
 
-    // If this conversation has an encryption key, import it
-    if (conversation.encryptionKey && !encryptionKeys[conversation.id]) {
-      try {
-        console.log("Importing encryption key for selected conversation");
-        const key = await importKey(conversation.encryptionKey);
-        setEncryptionKeys((prev) => ({
-          ...prev,
-          [conversation.id]: key,
-        }));
-      } catch (error) {
-        console.error("Error importing encryption key:", error);
-      }
-    }
+    try {
+      // Mark the conversation as read when it's selected
+      await markConversationAsRead(conversation.id);
 
-    loadMessages(conversation.id);
+      // Update the local conversations state to reflect the read status
+      setConversations(prev => 
+        prev.map(conv => 
+          conv.id === conversation.id 
+            ? { ...conv, unreadCount: 0 } 
+            : conv
+        )
+      );
+
+      // Fetch messages as before
+      // If this conversation has an encryption key, import it
+      if (conversation.encryptionKey && !encryptionKeys[conversation.id]) {
+        try {
+          console.log("Importing encryption key for selected conversation");
+          const key = await importKey(conversation.encryptionKey);
+          setEncryptionKeys((prev) => ({
+            ...prev,
+            [conversation.id]: key,
+          }));
+        } catch (error) {
+          console.error("Error importing encryption key:", error);
+        }
+      }
+
+      loadMessages(conversation.id);
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+    } finally {
+      setLoadingMessages(false);
+    }
   };
 
   // Load messages for a specific conversation
@@ -234,7 +268,7 @@ export const ConversationProvider: React.FC<{ children: ReactNode }> = ({
         const q = query(
           messagesRef,
           where("conversationId", "==", conversationId),
-          orderBy("timestamp", "asc")
+          orderBy("timestamp", messageSortDirection)
         );
 
         console.log("Setting up message listener");
@@ -289,13 +323,8 @@ export const ConversationProvider: React.FC<{ children: ReactNode }> = ({
 
               // Wait for all decryption operations to finish
               Promise.all(promises).then(() => {
-                // Sort by timestamp (null timestamps at the end)
-                messagesList.sort((a, b) => {
-                  if (!a.timestamp) return 1;
-                  if (!b.timestamp) return -1;
-                  return a.timestamp.toMillis() - b.timestamp.toMillis();
-                });
-
+                // No need to re-sort as Firestore query already returns messages
+                // in the requested sort order (messageSortDirection)
                 console.log("Setting decrypted messages:", messagesList);
                 setMessages([...messagesList]); // Create a new array to trigger state update
                 setLoadingMessages(false);
@@ -366,12 +395,24 @@ export const ConversationProvider: React.FC<{ children: ReactNode }> = ({
       const messageRef = await addDoc(collection(db, "messages"), messageData);
       console.log("Encrypted message added with ID:", messageRef.id);
 
-      // Update the conversation with a hint of the last message
+      // Get the other participant's ID to update their unread count
+      const otherParticipantId = currentConversation.participants.find(
+        (id) => id !== currentUser.uid
+      );
+
+      // Get the current conversation to check unread count
+      const conversationRef = doc(db, "conversations", currentConversation.id);
+      
+      // Update the conversation with the encrypted last message, IV, and increment unread count for the recipient
       await setDoc(
-        doc(db, "conversations", currentConversation.id),
+        conversationRef,
         {
-          lastMessage: "🔒 Encrypted message",
+          lastMessage: encryptedText,
+          lastMessageIv: iv,
+          lastMessageEncrypted: true,
           lastMessageTimestamp: serverTimestamp(),
+          // Increment unread count for the recipient when they're not viewing this conversation
+          unreadCount: otherParticipantId ? 1 : 0
         },
         { merge: true }
       );
@@ -394,6 +435,27 @@ export const ConversationProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
+  // Mark a conversation as read (set unreadCount to 0)
+  const markConversationAsRead = async (conversationId: string) => {
+    if (!currentUser) {
+      console.error("No current user");
+      return;
+    }
+
+    try {
+      console.log("Marking conversation as read:", conversationId);
+      await setDoc(
+        doc(db, "conversations", conversationId),
+        {
+          unreadCount: 0
+        },
+        { merge: true }
+      );
+    } catch (error) {
+      console.error("Error marking conversation as read:", error);
+    }
+  };
+
   // Load all conversations for the current user
   useEffect(() => {
     if (!currentUser) {
@@ -409,7 +471,7 @@ export const ConversationProvider: React.FC<{ children: ReactNode }> = ({
       where("participants", "array-contains", currentUser.uid)
     );
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
+    const unsubscribe = onSnapshot(q, async (snapshot) => {
       console.log(
         "Conversations snapshot received, count:",
         snapshot.docs.length
@@ -425,17 +487,44 @@ export const ConversationProvider: React.FC<{ children: ReactNode }> = ({
       });
 
       console.log("Setting conversations:", conversationsList);
-      setConversations(conversationsList);
 
-      // Import encryption keys for all conversations
-      conversationsList.forEach(async (conv) => {
+      // Import encryption keys for all conversations and decrypt last messages
+      const processedConversations = [...conversationsList];
+
+      // Process each conversation - import keys and decrypt last messages
+      for (const conv of processedConversations) {
         if (conv.encryptionKey && !encryptionKeys[conv.id]) {
           try {
+            // Import the encryption key
             const key = await importKey(conv.encryptionKey);
             setEncryptionKeys((prev) => ({
               ...prev,
               [conv.id]: key,
             }));
+
+            // Try to decrypt the last message if we have the key and IV
+            if (
+              conv.lastMessageEncrypted &&
+              conv.lastMessage &&
+              conv.lastMessageIv
+            ) {
+              try {
+                const decryptedLastMessage = await decryptMessage(
+                  conv.lastMessage,
+                  key,
+                  conv.lastMessageIv
+                );
+                // Update the conversation with decrypted message
+                conv.lastMessage = decryptedLastMessage;
+                conv.lastMessageEncrypted = false;
+              } catch (error) {
+                console.error(
+                  `Error decrypting last message for conversation ${conv.id}:`,
+                  error
+                );
+                conv.lastMessage = "🔒 Encrypted message";
+              }
+            }
           } catch (error) {
             console.error(
               `Error importing key for conversation ${conv.id}:`,
@@ -443,11 +532,41 @@ export const ConversationProvider: React.FC<{ children: ReactNode }> = ({
             );
           }
         }
-      });
+        // Handle the case where we already have the key
+        else if (
+          conv.lastMessageEncrypted &&
+          conv.lastMessage &&
+          conv.lastMessageIv &&
+          encryptionKeys[conv.id]
+        ) {
+          try {
+            const decryptedLastMessage = await decryptMessage(
+              conv.lastMessage,
+              encryptionKeys[conv.id],
+              conv.lastMessageIv
+            );
+            conv.lastMessage = decryptedLastMessage;
+            conv.lastMessageEncrypted = false;
+          } catch (error) {
+            console.error(
+              `Error decrypting last message for conversation ${conv.id}:`,
+              error
+            );
+            conv.lastMessage = "🔒 Encrypted message";
+          }
+        }
+        // If there's no key or iv available, show the message as encrypted
+        else if (conv.lastMessageEncrypted) {
+          conv.lastMessage = "🔒 Encrypted message";
+        }
+      }
+
+      // Update state with processed conversations
+      setConversations(processedConversations);
     });
 
     return () => unsubscribe();
-  }, [currentUser]);
+  }, [currentUser, encryptionKeys]);
 
   const value = {
     conversations,
@@ -457,6 +576,9 @@ export const ConversationProvider: React.FC<{ children: ReactNode }> = ({
     startConversationWith,
     sendMessage,
     loadingMessages,
+    messageSortDirection,
+    toggleMessageSort,
+    markConversationAsRead,
   };
 
   return (

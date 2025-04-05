@@ -13,7 +13,11 @@ interface Message {
 }
 
 const MessageList: React.FC = () => {
-  const { messages, loadingMessages, currentConversation } = useConversations();
+  const {
+    messages,
+    loadingMessages,
+    currentConversation,
+  } = useConversations();
   const { currentUser } = useAuth();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -30,7 +34,7 @@ const MessageList: React.FC = () => {
         behavior: shouldSmoothScroll ? "smooth" : "auto",
       });
     }
-  }, [messages]);
+  }, [messages, prevMessagesLength]);
 
   if (!currentConversation) {
     return <div className="noConversation">Select a conversation</div>;
@@ -67,6 +71,29 @@ const MessageList: React.FC = () => {
     );
   };
 
+  // Format date for separator
+  const formatDateSeparator = (dateString: string) => {
+    if (dateString === "pending") return "Sending...";
+
+    const messageDate = new Date(dateString);
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    if (messageDate.toDateString() === today.toDateString()) {
+      return "Today";
+    } else if (messageDate.toDateString() === yesterday.toDateString()) {
+      return "Yesterday";
+    } else {
+      return messageDate.toLocaleDateString(undefined, {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+    }
+  };
+
   // Group messages by date
   const groupMessagesByDate = () => {
     const groups: { date: string; messages: Message[] }[] = [];
@@ -78,7 +105,7 @@ const MessageList: React.FC = () => {
           groups[groups.length - 1].messages.push(message);
         } else {
           currentDate = "pending";
-          groups.push({ date: "Sending...", messages: [message] });
+          groups.push({ date: "pending", messages: [message] });
         }
         return;
       }
@@ -99,51 +126,55 @@ const MessageList: React.FC = () => {
   const messageGroups = groupMessagesByDate();
 
   return (
-    <div className="messagesContainer" ref={messagesContainerRef}>
-      {messageGroups.map((group, groupIndex) => (
-        <div key={groupIndex}>
-          <div className="dateSeparator">{group.date}</div>
-          {group.messages.map((message) => (
-            <div
-              key={message.id}
-              className={`message ${
-                message.senderId === currentUser?.uid
-                  ? "myMessage"
-                  : "theirMessage"
-              }`}
-            >
-              <div className="messageContent">
-                {message.senderId !== currentUser?.uid && (
-                  <div className="messageSender">
-                    {getSenderName(message.senderId)}
+    <>
+      <div className="messagesContainer" ref={messagesContainerRef}>
+        {messageGroups.map((group, groupIndex) => (
+          <div key={groupIndex} className="messageGroup">
+            <div className="dateSeparator">
+              {formatDateSeparator(group.date)}
+            </div>
+            {group.messages.map((message) => (
+              <div
+                key={message.id}
+                className={`message ${
+                  message.senderId === currentUser?.uid
+                    ? "myMessage"
+                    : "theirMessage"
+                }`}
+              >
+                <div className="messageContent">
+                  {message.senderId !== currentUser?.uid && (
+                    <div className="messageSender">
+                      {getSenderName(message.senderId)}
+                    </div>
+                  )}
+                  <div className="messageText">
+                    {message.text}
+                    {message.decrypted && (
+                      <span
+                        className="encryptedMessageIndicator"
+                        title="End-to-end encrypted"
+                      >
+                        🔒
+                      </span>
+                    )}
                   </div>
-                )}
-                <div className="messageText">
-                  {message.text}
-                  {message.decrypted && (
-                    <span
-                      className="encryptedMessageIndicator"
-                      title="End-to-end encrypted"
-                    >
-                      🔒
-                    </span>
+                  <div className="messageTime">
+                    {formatTime(message.timestamp)}
+                  </div>
+                  {message.text && !message.decrypted && (
+                    <div className="decryptionError">
+                      ⚠️ Could not decrypt message
+                    </div>
                   )}
                 </div>
-                <div className="messageTime">
-                  {formatTime(message.timestamp)}
-                </div>
-                {!message.decrypted && (
-                  <div className="decryptionError">
-                    ⚠️ Could not decrypt message
-                  </div>
-                )}
               </div>
-            </div>
-          ))}
-        </div>
-      ))}
-      <div ref={messagesEndRef} />
-    </div>
+            ))}
+          </div>
+        ))}
+        <div ref={messagesEndRef} className="messagesEnd" />
+      </div>
+    </>
   );
 };
 

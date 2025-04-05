@@ -4,31 +4,34 @@
   align-items: center;
   justify-content: center;
   height: 100vh;
-  padding: 2rem;
+  padding: var(--lessRelated);
   text-align: center;
+  background-color: var(--background-dark);
 }
 
 .loginContainer h1 {
-  margin-bottom: 1rem;
-  color: #333;
+  margin-bottom: var(--semiRelated);
+  color: var(--text-primary);
+  font-size: var(--extraLargeSubheading);
 }
 
 .loginContainer p {
-  margin-bottom: 2rem;
-  color: #666;
+  margin-bottom: var(--lessRelated);
+  color: var(--text-secondary);
+  font-size: var(--paragraph);
 }
 
 .googleSigninBtn {
-  background-color: #4285f4;
-  color: white;
+  background-color: var(--primary-blue);
+  color: var(--text-primary);
   border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 4px;
-  font-size: 1rem;
+  font-size: var(--paragraph);
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
 .googleSigninBtn:hover {
-  background-color: #3367d6;
+  background-color: var(--primary-blue-hover);
 }

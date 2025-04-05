@@ -3,17 +3,35 @@
   height: 40px;
   border-radius: 50%;
   margin-right: 12px;
+  border: 2px solid var(--border-color);
+  object-fit: cover;
 }
 
 .defaultAvatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #3b82f6;
-  color: white;
+  background-color: var(--primary-blue);
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
   margin-right: 12px;
+  border: 2px solid var(--border-light);
+}
+
+.fallback-animation {
+  animation: fallbackFade 0.3s ease-in;
+}
+
+@keyframes fallbackFade {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
