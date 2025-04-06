@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { useConversations } from "../../contexts/ConversationContext";
 import { useAuth } from "../../contexts/AuthContext";
 import { Timestamp } from "firebase/firestore";
+import MessageListLoader from "./MessageListLoader";
 import "./MessageList.css";
 
 interface Message {
@@ -37,7 +38,7 @@ const MessageList: React.FC = () => {
   }
 
   if (loadingMessages) {
-    return <div className="loadingMessages">Loading messages...</div>;
+    return <MessageListLoader />;
   }
 
   if (messages.length === 0) {

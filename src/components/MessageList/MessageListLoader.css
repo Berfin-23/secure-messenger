@@ -1,0 +1,47 @@
+.messageListLoader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 20px;
+  color: var(--text-tertiary);
+}
+
+.messageLoaderLogo {
+  margin-bottom: 16px;
+  animation: pulseAndFloat 2s infinite ease-in-out;
+  opacity: 0.7;
+}
+
+.messageLoaderText {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  animation: fadeInOut 1.5s infinite ease-in-out;
+}
+
+@keyframes pulseAndFloat {
+  0% {
+    transform: translateY(0) scale(0.95);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(-5px) scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(0) scale(0.95);
+    opacity: 0.5;
+  }
+}
+
+@keyframes fadeInOut {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
