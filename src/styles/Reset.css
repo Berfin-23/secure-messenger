@@ -47,6 +47,17 @@ img,
 picture {
   max-width: 100%;
   display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+  -moz-user-drag: none;
+  -ms-user-drag: none;
+  -o-user-drag: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  -ms-touch-callout: none;
 }
 
 input,

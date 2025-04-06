@@ -7,3 +7,12 @@
   color: var(--text-secondary);
   background-color: var(--background-dark);
 }
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: var(--background-dark);
+}

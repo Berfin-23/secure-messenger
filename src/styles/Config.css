@@ -15,10 +15,21 @@ button {
   transition: background-color 0.3s ease;
 }
 
+/* Remove yellow highlight on input focus */
+input:focus,
+textarea:focus,
+select:focus,
+button:focus,
+[contenteditable="true"]:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--primary-blue-light);
+  border-color: var(--primary-blue-light);
+}
+
 /* Set scrollbar for webkit browsers */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 0px;
+  height: 0px;
 }
 
 ::-webkit-scrollbar-track {
