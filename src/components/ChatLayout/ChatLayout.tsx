@@ -42,7 +42,7 @@ const ChatLayout: React.FC = () => {
       <div className="sidebar">
         <div className="appHeader">
           <Logo className="appLogo" fill="var(--primary-blue)" />
-          <h1 className="appTitle">Cypher Bee</h1>
+          <h1 className="appTitle">Cipher Bee</h1>
         </div>
 
         <div className="sidebarContent">
@@ -127,7 +127,7 @@ const ChatLayout: React.FC = () => {
                 width={120}
                 height={120}
               />
-              <h2>Welcome to Cypher Bee</h2>
+              <h2>Welcome to Cipher Bee</h2>
               <p>Search for a user to start an encrypted conversation</p>
               <p>or select an existing conversation</p>
               <div className="encryptionNotice">

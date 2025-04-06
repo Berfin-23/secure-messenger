@@ -30,7 +30,7 @@ const Login: React.FC = () => {
               width={80}
               height={80}
             />
-            <h1>Cypher Bee</h1>
+            <h1>Cipher Bee</h1>
           </div>
           <p className="tagline">Secure, end-to-end encrypted messaging</p>
           <div className="divider"></div>
@@ -47,7 +47,7 @@ const Login: React.FC = () => {
           </div>
         </div>
         <div className="loginFooter">
-          <p>&copy; 2025 Cypher Bee • Secure Messenger</p>
+          <p>&copy; 2025 Cipher Bee • Secure Messenger</p>
         </div>
       </div>
     </div>
