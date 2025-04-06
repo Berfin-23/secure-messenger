@@ -13,12 +13,12 @@ const MessageInput: React.FC = () => {
     if (textareaRef.current) {
       // Reset height to check actual scrollHeight
       textareaRef.current.style.height = "40px";
-      
+
       const newHeight = Math.min(
         textareaRef.current.scrollHeight,
         120 // Max height
       );
-      
+
       textareaRef.current.style.height = `${newHeight}px`;
     }
   }, [message]);

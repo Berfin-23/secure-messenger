@@ -1,0 +1,71 @@
+/**
+ * Utility functions to dynamically update favicon based on system color scheme
+ */
+
+/**
+ * Creates an SVG favicon string with the specified color
+ */
+export const createFaviconSVG = (color: string): string => {
+  return `
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 375 375" preserveAspectRatio="xMidYMid meet">
+      <path fill="${color}" d="M 196.453125 151.761719 C 196.007812 151.320312 194.648438 147.75 194.203125 146.859375 C 148.738281 53.714844 47.121094 56.816406 31.089844 98.714844 C 18.601562 130.800781 72.539062 207.019531 196.453125 151.761719 Z M 196.453125 151.761719" />
+      <path fill="${color}" d="M 216.949219 143.289062 C 286.902344 112.09375 277.109375 58.179688 258.828125 51.039062 C 234.746094 41.671875 190.191406 77.796875 215.589844 140.613281 C 216.035156 141.0625 216.949219 142.84375 216.949219 143.289062 Z M 216.949219 143.289062" />
+      <path fill="${color}" d="M 150.09375 227.25 C 137.164062 247.316406 127.351562 267.8125 120.660156 282.53125 C 120.238281 283.421875 120.238281 283.867188 119.792969 284.757812 C 117.5625 290.550781 115.3125 295.011719 113.992188 299.027344 C 112.210938 303.464844 114.441406 308.839844 119.34375 310.601562 C 122.890625 311.960938 127.796875 313.722656 133.617188 315.953125 C 134.488281 316.398438 134.953125 316.398438 135.84375 316.824219 C 151.453125 322.175781 172.839844 327.972656 196.03125 331.988281 C 182.203125 318.628906 171.054688 302.558594 163.027344 284.738281 C 154.980469 266.496094 150.539062 246.871094 150.09375 227.25 Z M 150.09375 227.25" />
+      <path fill="${color}" d="M 345.726562 202.742188 C 335.042969 179.128906 315.867188 161.757812 293.144531 153.730469 C 290.914062 152.859375 288.683594 152.390625 286.007812 152.390625 C 274.414062 152.390625 262.839844 162.207031 261.949219 174.246094 C 260.164062 194.738281 264.179688 215.230469 273.078125 235.296875 C 281.976562 254.917969 294.460938 271.398438 310.089844 283.867188 C 314.101562 286.988281 319.457031 288.324219 324.339844 288.324219 C 333.722656 288.324219 342.621094 283.4375 346.191406 274.96875 C 355.980469 253.097656 356.449219 226.804688 345.726562 202.742188 Z M 345.726562 202.742188" />
+      <path fill="${color}" d="M 246.785156 247.765625 C 235.65625 222.792969 231.195312 197.390625 233.425781 172.417969 C 233.855469 165.308594 236.101562 158.613281 239.203125 152.816406 C 238.777344 152.816406 237.867188 153.242188 237.421875 153.242188 C 236.53125 153.691406 235.191406 153.691406 234.300781 154.136719 C 227.609375 155.917969 220.941406 159.039062 215.144531 162.160156 C 212.042969 163.964844 209.367188 165.75 206.246094 167.53125 C 191.101562 177.789062 178.617188 195.605469 176.832031 214.335938 C 175.027344 234.382812 178.617188 254.898438 187.070312 274.503906 C 195.539062 293.675781 208.007812 309.285156 223.171875 321.304688 C 232.535156 328.882812 249.015625 333.34375 262.859375 333.34375 C 278.003906 333.34375 294.035156 327.546875 306.96875 319.519531 C 306.96875 319.519531 307.414062 319.519531 307.414062 319.09375 C 308.289062 318.652344 309.199219 317.738281 310.089844 317.289062 C 310.515625 316.84375 310.960938 316.417969 311.40625 316.417969 C 304.273438 314.613281 298.050781 311.515625 292.699219 307.480469 C 273.097656 292.335938 257.507812 272.269531 246.785156 247.765625 Z M 246.785156 247.765625" />
+    </svg>
+  `;
+};
+
+/**
+ * Creates a data URI for a favicon with the specified color
+ */
+export const createFaviconURI = (color: string): string => {
+  const svg = createFaviconSVG(color);
+  return `data:image/svg+xml;base64,${btoa(svg)}`;
+};
+
+/**
+ * Updates the favicon based on the color scheme
+ * @param isDarkMode Whether the user is in dark mode
+ */
+export const updateFavicon = (isDarkMode: boolean): void => {
+  const color = isDarkMode ? "#ffffff" : "#000000";
+  const faviconURI = createFaviconURI(color);
+
+  // Find existing favicon link or create a new one
+  let link: HTMLLinkElement | null =
+    document.querySelector("link[rel~='icon']");
+  if (!link) {
+    link = document.createElement("link");
+    link.rel = "icon";
+    document.head.appendChild(link);
+  }
+
+  // Update the favicon
+  link.href = faviconURI;
+};
+
+/**
+ * Sets up a listener for color scheme changes and updates the favicon accordingly
+ */
+export const initializeDynamicFavicon = (): (() => void) => {
+  // Initial check for dark mode
+  const prefersDarkMode = window.matchMedia(
+    "(prefers-color-scheme: dark)"
+  ).matches;
+  updateFavicon(prefersDarkMode);
+
+  // Set up listener for changes in color scheme
+  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+  const handleColorSchemeChange = (e: MediaQueryListEvent): void => {
+    updateFavicon(e.matches);
+  };
+
+  mediaQuery.addEventListener("change", handleColorSchemeChange);
+
+  // Return cleanup function
+  return () =>
+    mediaQuery.removeEventListener("change", handleColorSchemeChange);
+};

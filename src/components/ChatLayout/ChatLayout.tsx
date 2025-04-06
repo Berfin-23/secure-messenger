@@ -120,9 +120,21 @@ const ChatLayout: React.FC = () => {
           </div>
         ) : (
           <div className="noChatSelected">
-            <h2>Welcome to Cypher Bee</h2>
-            <p>Search for a user to start an encrypted conversation</p>
-            <p>or select an existing conversation</p>
+            <div className="welcomeContent">
+              <Logo
+                className="welcomeLogo logo-subtle"
+                fill="var(--text-tertiary)"
+                width={120}
+                height={120}
+              />
+              <h2>Welcome to Cypher Bee</h2>
+              <p>Search for a user to start an encrypted conversation</p>
+              <p>or select an existing conversation</p>
+              <div className="encryptionNotice">
+                <i className="fa fa-shield-alt"></i>
+                <span>End-to-end encrypted messaging</span>
+              </div>
+            </div>
           </div>
         )}
       </div>

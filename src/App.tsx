@@ -9,11 +9,13 @@ import { ConversationProvider } from "./contexts/ConversationContext";
 import Login from "./pages/Login/Login";
 import Chat from "./pages/Chat/Chat";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import DynamicFavicon from "./components/DynamicFavicon/DynamicFavicon";
 
 function App() {
   return (
     <AuthProvider>
       <ConversationProvider>
+        <DynamicFavicon />
         <Router>
           <Routes>
             <Route path="/login" element={<Login />} />

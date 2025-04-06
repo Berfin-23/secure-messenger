@@ -135,9 +135,53 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: var(--text-secondary);
+  color: var(--text-tertiary);
   text-align: center;
   padding: 20px;
+}
+
+.welcomeContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 460px;
+}
+
+.welcomeLogo {
+  margin-bottom: 24px;
+  opacity: 0.8;
+}
+
+.noChatSelected h2 {
+  font-size: 28px;
+  margin-bottom: 16px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.noChatSelected p {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.encryptionNotice {
+  display: flex;
+  align-items: center;
+  margin-top: 32px;
+  padding: 10px 16px;
+  background-color: var(--background-dark-tertiary);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.encryptionNotice i {
+  color: var(--encrypted-color);
+  margin-right: 8px;
+  font-size: 14px;
+}
+
+.encryptionNotice span {
+  color: var(--text-secondary);
 }
 
 .chatWithUser {
@@ -153,6 +197,7 @@
   justify-content: space-between;
   align-items: center;
   background-color: var(--background-dark-tertiary);
+  height: 73px;
 }
 
 .chatHeaderUserInfo {

@@ -13,11 +13,7 @@ interface Message {
 }
 
 const MessageList: React.FC = () => {
-  const {
-    messages,
-    loadingMessages,
-    currentConversation,
-  } = useConversations();
+  const { messages, loadingMessages, currentConversation } = useConversations();
   const { currentUser } = useAuth();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -59,18 +55,6 @@ const MessageList: React.FC = () => {
     });
   };
 
-  // Get sender name
-  const getSenderName = (senderId: string) => {
-    if (!currentConversation.participantProfiles) return "User";
-    if (!currentConversation.participantProfiles[senderId])
-      return "Unknown User";
-    return (
-      currentConversation.participantProfiles[senderId].displayName ||
-      currentConversation.participantProfiles[senderId].email ||
-      "Unknown User"
-    );
-  };
-
   // Format date for separator
   const formatDateSeparator = (dateString: string) => {
     if (dateString === "pending") return "Sending...";
@@ -99,24 +83,55 @@ const MessageList: React.FC = () => {
     const groups: { date: string; messages: Message[] }[] = [];
     let currentDate = "";
 
-    messages.forEach((message) => {
-      if (!message.timestamp) {
-        if (currentDate === "pending") {
-          groups[groups.length - 1].messages.push(message);
-        } else {
-          currentDate = "pending";
-          groups.push({ date: "pending", messages: [message] });
+    // First, deduplicate messages by content for the same sender
+    // This will prevent showing both the temporary "sending" message and the confirmed server message
+    const uniqueMessages = messages.reduce<Message[]>((acc, current) => {
+      // Check if we already have a message with the same content from the same sender
+      const duplicateMessage = acc.find(
+        (msg) =>
+          msg.text === current.text &&
+          msg.senderId === current.senderId &&
+          // If one has a timestamp and the other doesn't, keep the one with the timestamp
+          ((msg.timestamp && !current.timestamp) ||
+            (!msg.timestamp && current.timestamp))
+      );
+
+      // If we found a duplicate message
+      if (duplicateMessage) {
+        // Keep the one with the timestamp (sent status) over the one without (sending status)
+        if (current.timestamp && !duplicateMessage.timestamp) {
+          // Replace the duplicate with the timestamped one
+          const index = acc.indexOf(duplicateMessage);
+          acc[index] = current;
         }
-        return;
+        // Don't add the current message to our accumulator
+        return acc;
       }
 
-      const messageDate = new Date(message.timestamp.toDate()).toDateString();
+      // No duplicate found, add this message
+      return [...acc, current];
+    }, []);
 
-      if (messageDate !== currentDate) {
-        currentDate = messageDate;
-        groups.push({ date: messageDate, messages: [message] });
+    // Process unique messages
+    uniqueMessages.forEach((message) => {
+      // For messages with timestamp, group by date
+      if (message.timestamp) {
+        const messageDate = new Date(message.timestamp.toDate()).toDateString();
+
+        if (messageDate !== currentDate) {
+          currentDate = messageDate;
+          groups.push({ date: messageDate, messages: [message] });
+        } else {
+          groups[groups.length - 1].messages.push(message);
+        }
       } else {
-        groups[groups.length - 1].messages.push(message);
+        // For pending messages, add them to the most recent date group
+        // or create a new group if none exists
+        if (groups.length === 0) {
+          groups.push({ date: new Date().toDateString(), messages: [message] });
+        } else {
+          groups[groups.length - 1].messages.push(message);
+        }
       }
     });
 
@@ -143,20 +158,13 @@ const MessageList: React.FC = () => {
                 }`}
               >
                 <div className="messageContent">
-                  {message.senderId !== currentUser?.uid && (
-                    <div className="messageSender">
-                      {getSenderName(message.senderId)}
-                    </div>
-                  )}
                   <div className="messageText">
                     {message.text}
                     {message.decrypted && (
                       <span
                         className="encryptedMessageIndicator"
                         title="End-to-end encrypted"
-                      >
-                        🔒
-                      </span>
+                      ></span>
                     )}
                   </div>
                   <div className="messageTime">
